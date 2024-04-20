@@ -27,7 +27,7 @@ public class StudentDashboard {
 //
         String data;
 //
-        System.out.println("=".repeat(60));
+        System.out.println("=".repeat(62));
         System.out.println("[+] Update Student's Information: ".toUpperCase(Locale.ROOT));
         System.out.println("1. Update student's Name");
         System.out.println("2. Update student's Date of birth");
@@ -35,6 +35,7 @@ public class StudentDashboard {
         System.out.println("4. Update student's Subject");
         System.out.println(".".repeat(20));
         System.out.print("> Insert option: ");
+        SoundUtils.alertSound();
         String opt = new Scanner(System.in).next();
         switch (Integer.parseInt(opt)){
             case 1->{

@@ -216,7 +216,7 @@ public class StudentServiceImp implements StudentService{
 
     @Override
     public Student updateStudentById(String id, Student student) {
-        if((students.contains(students.stream().filter(e->e.getId().equals(id)).findAny().get()))){
+        if(checkIsStudentExistedById(id)){
             students.stream().filter(e->e.getId().equals(id)).forEach(e->{
                 e.setStudentName(student.getStudentName());
                 e.setStudentDateOfBirth(student.getStudentDateOfBirth());
