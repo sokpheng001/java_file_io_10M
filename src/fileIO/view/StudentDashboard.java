@@ -3,12 +3,10 @@ package fileIO.view;
 import fileIO.controller.StudentController;
 
 import fileIO.model.Student;
-import fileIO.model.service.StudentServiceImp;
+
 import fileIO.utils.DataAction;
 import fileIO.utils.SoundUtils;
 import fileIO.utils.StudentDataTable;
-
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -142,15 +140,27 @@ public class StudentDashboard {
                     System.out.println("[*] System closed !!! :)".toUpperCase(Locale.ROOT));
                     System.exit(0);
                 }
-                case 1->{
-                    studentController.addNewStudent((insertNewStudentsInfo()));
-                }
+                case 1-> studentController.addNewStudent((insertNewStudentsInfo()));
                 case 2->{
-                    StudentDataTable.dataTable(studentController.listAllStudents());
+                    List<Student> studentList = studentController.listAllStudents();
+                    StudentDataTable.studentDataTable(studentList,3);
+                    try{
+                        do {
+                            System.out.print("[+] Insert to Navigate: ");
+                            String op = new Scanner(System.in).nextLine();
+                            if(op.isEmpty()){
+                                break;
+                            }
+                            StudentDataTable.studentDataTable(studentList, Integer.parseInt(op));
+
+
+                        } while (!opt.isEmpty());
+                    }catch (OutOfMemoryError outOfMemoryError){
+                        SoundUtils.windowsRingSound();
+                        System.out.println("[!] Problem during listing data.".toUpperCase(Locale.ROOT));
+                    }
                 }
-                case 3->{
-                    studentController.commitData();
-                }
+                case 3-> studentController.commitData();
                 case 4->{
                     System.out.println("[*] Search student by ID".toUpperCase(Locale.ROOT));
                     System.out.print("> Insert student's ID: ");
@@ -160,7 +170,7 @@ public class StudentDashboard {
                                 List.of(studentController.searchStudentById(id.trim()))
                         ));
                     }catch (NoSuchElementException exception){
-                        StudentDataTable.dataTable(new ArrayList<>(),STR." No such a student you found with ID \"\{id}\"".toUpperCase(Locale.CANADA));
+                        StudentDataTable.studentDataTable(new ArrayList<>(),null,STR." No such a student you found with ID \"\{id}\"".toUpperCase(Locale.CANADA));
                     }
                 }
                 case 5->{
@@ -182,7 +192,7 @@ public class StudentDashboard {
                         SoundUtils.alertSound();
                         new Scanner(System.in).nextLine();
                     }catch (NoSuchElementException exception){
-                        StudentDataTable.dataTable(new ArrayList<>(),STR." No such a student you found with ID \"\{id}\"".toUpperCase(Locale.CANADA));
+                        StudentDataTable.studentDataTable(new ArrayList<>(),null,STR." No such a student you found with ID \"\{id}\"".toUpperCase(Locale.CANADA));
                     }
                 }
                 case 6->{
@@ -196,12 +206,10 @@ public class StudentDashboard {
                         studentController.deleteStudentById(id.trim());
                     }catch (NoSuchElementException exception){
                         SoundUtils.windowsRingSound();
-                        StudentDataTable.dataTable(new ArrayList<>(), STR." No such a student you found with ID \"\{id}\"".toUpperCase(Locale.CANADA));
+                        StudentDataTable.studentDataTable(new ArrayList<>(),null ,STR." No such a student you found with ID \"\{id}\"".toUpperCase(Locale.CANADA));
                     }
                 }
-                case 7->{
-                    studentController.generateObjects();
-                }
+                case 7-> studentController.generateObjects();
                 case 8->{
 
                 }

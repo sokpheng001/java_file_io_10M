@@ -6,13 +6,13 @@ import org.nocrala.tools.texttablefmt.CellStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class StudentDataTable {
-    public static void dataTable(List<Student> anyObjectList, String...message){
+    public static void studentDataTable(List<Student> anyObjectList, Integer actualRecordNumberInOnce ,String...message){
+        if(actualRecordNumberInOnce==null || actualRecordNumberInOnce==0|| actualRecordNumberInOnce<0 || actualRecordNumberInOnce>anyObjectList.size() ){
+            actualRecordNumberInOnce = 3;
+        }
 //        System.out.println(".".repeat(40));
         if(anyObjectList.equals(new ArrayList<Student>())){
             if(message.length==0){
@@ -42,14 +42,19 @@ public class StudentDataTable {
                 table.addCell(hero.getStudentDateOfBirth(),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
                 table.addCell(Arrays.toString(hero.getStudentClasses()),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
                 table.addCell(Arrays.toString(hero.getStudentSubjects()),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
-                if(anyObjectList.size()>5){
+                if(anyObjectList.size()>actualRecordNumberInOnce){
                     i++;
-                    if(i==5){
+                    if(i==actualRecordNumberInOnce){
                         break;
                     }
                 }
             }
             System.out.println(table.render());
+//            pagination
+            int page = anyObjectList.size()/actualRecordNumberInOnce;
+            System.out.println("-".repeat(146));
+            System.out.print(STR."+ Number of page: \{(page)==0? 1:page } \t\t+ Actual record: \{actualRecordNumberInOnce}\t\t+ All Record: \{anyObjectList.size()}\t\t\t\t\t\t-> Previous (P/p) \t\t Next (n/N) <-\n");
+            System.out.println("-".repeat(80));
         }
     }
     public static void tableFromSearchedResult(List<Student> anyObjectList, String...message){
@@ -72,7 +77,6 @@ public class StudentDataTable {
                 table.setColumnWidth(i, 30, 50);
             }
 //        data
-            int i = 0;
             for (Student hero : anyObjectList) {
                 table.addCell("ID", new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
                 table.addCell(hero.getId(), new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);

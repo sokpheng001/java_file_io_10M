@@ -194,13 +194,13 @@ public class StudentServiceImp implements StudentService{
         if(checkIsStudentExistedById(id)){
             List<Student> deletedStudent = searchStudentById(id);
             if(!deletedStudent.isEmpty()){
+                SoundUtils.alertSound();
                 System.out.print("[+] Are sure to delete the student information[Y/n]: ");
                 String opt = new Scanner(System.in).nextLine();
                 if(opt.equalsIgnoreCase("y")){
                     students.removeAll(deletedStudent);
                     DataAction.addDataToTransaction(students,"transaction-delete.dat");
-                    System.out.println("[+] User data has been deleted successfully.");
-                    SoundUtils.alertSound();
+                    System.out.println("[+] User data has been deleted temporarily successfully.");
                 }
                 return deletedStudent.getFirst();
             }
