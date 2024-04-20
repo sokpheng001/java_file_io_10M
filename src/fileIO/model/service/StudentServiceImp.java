@@ -1,6 +1,7 @@
 package fileIO.model.service;
 import fileIO.model.Student;
 import fileIO.utils.DataAction;
+import fileIO.utils.SoundUtils;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ public class StudentServiceImp implements StudentService{
 //            assert students != null;
             students.add(student);
             System.out.println("[*] Student has been add successfully. \n[!] To store data permanently, please commit it (Start option 3).".toUpperCase(Locale.ROOT));
+            SoundUtils.alertSound();
         }catch (Exception ignore){}
     }
     private void commitObjectToFile(List<Student> data,int ...numberOfObject){
@@ -115,7 +117,7 @@ public class StudentServiceImp implements StudentService{
     public int addNewStudent(Student student) {
         tempoList.add(student);
 //
-        DataAction.addDataToTransaction(tempoList);
+        DataAction.addDataToTransaction(tempoList,"transaction-addNew.dat");
 //
         writeDataTempo(student);
         return 0;
@@ -130,11 +132,12 @@ public class StudentServiceImp implements StudentService{
         if(students != null){
             if(tempoList.isEmpty()){
                 System.out.println("[!] No Data to commit.".toUpperCase(Locale.ROOT));
+                SoundUtils.windowsRingSound();
             }else {
                 try{
                     Collections.reverse(students);
                     commitObjectToFile(students,students.size());
-                    DataAction.addDataToTransaction(new ArrayList<>());
+                    DataAction.addDataToTransaction(new ArrayList<>(),"transaction-addNew.dat");
 //
                 }catch (Exception exception){
                     System.out.println(STR."[!] Problem during committing data: \{exception.getMessage()}");
@@ -147,17 +150,20 @@ public class StudentServiceImp implements StudentService{
 
     @Override
     public void commitFromTransaction() {
-        try{
-            if(students.isEmpty()){
-                students.addAll(0,Objects.requireNonNull(DataAction.readFromTransaction()));
-            }else {
-                for(Student student: Objects.requireNonNull(DataAction.readFromTransaction())){
+        String [] fileToRead = {"transaction-addNew.dat","transaction-update.dat","transaction-delete.dat"};
+        List<Student> store = new ArrayList<>();
+        for(String fileName: fileToRead ){
+            if(checkIsDataAvailableInTransaction(fileName)){
+                students.clear();
+                for(Student student: Objects.requireNonNull(DataAction.readFromTransaction(fileName))){
                     if(!students.contains(student)){
                         students.add(student);
+                        Collections.reverse(students);
                     }
                 }
-//                students.addAll(Objects.requireNonNull(DataAction.readFromTransaction()));
             }
+        }
+        try{
             commitObjectToFile(students,DataAction.numberOfDataHasBeenStoredInTransactionFile);
         }catch (Exception ignore){}
     }
@@ -169,51 +175,55 @@ public class StudentServiceImp implements StudentService{
     }
 
     @Override
-    public Boolean checkIsDataAvailableInTransaction() {
-        return DataAction.readFromTransaction() !=null;
+    public Boolean checkIsDataAvailableInTransaction(String fileToCheck) {
+        return DataAction.readFromTransaction(fileToCheck)!=null;
     }
 
     @Override
-    public Student searchStudentById(String id) throws NoSuchElementException{
+    public List<Student> searchStudentById(String id) throws NoSuchElementException{
         try{
-            return students.stream().filter(e->e.getId().equals(id)).findAny().get();
+            return students.stream().filter(e->e.getId().equals(id)).toList();
         }catch (NullPointerException exception){
             System.out.println(STR."[!] Problem: \{exception.getMessage()}");
-            return new Student();
+            return new ArrayList<>();
         }
     }
 
     @Override
-    public List<Student> deleteStudentById(String id) {
-        System.out.print("[!] Are you sure to delete [Y/N]: ");
-        String opt = new Scanner(System.in).nextLine();
-        Student deletedStudent;
-        if(opt.equalsIgnoreCase("y")){
-            if((students.contains(students.stream().filter(e->e.getId().equals(id)).findAny().get()))){
-//                deletedStudent = students.stream().filter(e->e.getId().equals(id)).findAny().get();
-                students.removeIf(e->e.getId().equals(id));
-                System.out.println(STR."[!] Length of list after deleted: \{students.size()}");
-                if(students.isEmpty()){
-
-                }else {
-                    tempoList.addAll(students);
+    public Student deleteStudentById(String id) {
+        if(checkIsStudentExistedById(id)){
+            List<Student> deletedStudent = searchStudentById(id);
+            if(!deletedStudent.isEmpty()){
+                System.out.print("[+] Are sure to delete the student information[Y/n]: ");
+                String opt = new Scanner(System.in).nextLine();
+                if(opt.equalsIgnoreCase("y")){
+                    students.removeAll(deletedStudent);
+                    DataAction.addDataToTransaction(students,"transaction-delete.dat");
+                    System.out.println("[+] User data has been deleted successfully.");
+                    SoundUtils.alertSound();
                 }
-                DataAction.addDataToTransaction(tempoList);
-            }else {
-                throw new NoSuchElementException();
+                return deletedStudent.getFirst();
             }
-            return students;
-        }else {
-            System.out.println("[+] Deleting data was canceled.".toUpperCase(Locale.ROOT));
-            return students;
         }
+        System.out.println(".".repeat(40));
+        throw new NoSuchElementException();
     }
 
     @Override
-    public Student updateStudentById(String id) {
+    public Boolean checkIsStudentExistedById(String id) {
+        return students.contains(students.stream().filter(e->e.getId().equals(id)).findAny().get());
+    }
+
+    @Override
+    public Student updateStudentById(String id, Student student) {
         if((students.contains(students.stream().filter(e->e.getId().equals(id)).findAny().get()))){
-            Student student = students.stream().filter(e->e.getId().equals(id)).findAny().get();
-            student.setStudentName("Kim Chi");
+            students.stream().filter(e->e.getId().equals(id)).forEach(e->{
+                e.setStudentName(student.getStudentName());
+                e.setStudentDateOfBirth(student.getStudentDateOfBirth());
+                e.setStudentClasses(student.getStudentClasses());
+                e.setStudentSubjects(student.getStudentSubjects());
+            });
+            DataAction.addDataToTransaction(students, "transaction-update.dat");
             return student;
         }else {
             throw new NoSuchElementException();

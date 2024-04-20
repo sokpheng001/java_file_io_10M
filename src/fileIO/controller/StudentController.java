@@ -32,18 +32,21 @@ public class StudentController {
         }
     }
     public Boolean checkDataIsAvailableInTransaction(){
-        return service.checkIsDataAvailableInTransaction();
+        String [] fileToRead = {"transaction-addNew.dat","transaction-update.dat","transaction-delete.dat"};
+        return service.checkIsDataAvailableInTransaction(fileToRead[0])
+                || service.checkIsDataAvailableInTransaction(fileToRead[1])
+                || service.checkIsDataAvailableInTransaction(fileToRead[2]);
     }
     public void commitDataFromTransaction(){
         service.commitFromTransaction();
     }
     public Student searchStudentById(String id) throws NoSuchElementException {
-        return service.searchStudentById(id);
+        return service.searchStudentById(id).getFirst();
     }
-    public List<Student> deleteStudentById(String id){
+    public Student deleteStudentById(String id){
         return service.deleteStudentById(id);
     }
-    public Student updateStudentById(String id){
-        return service.updateStudentById(id);
+    public Student updateStudentById(String id, Student student){
+        return service.updateStudentById(id, student);
     }
 }

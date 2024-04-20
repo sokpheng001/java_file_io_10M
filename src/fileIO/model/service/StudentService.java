@@ -11,8 +11,9 @@ public interface StudentService {
     void commitDataToFile();
     void commitFromTransaction();
     void destroyData();
-    Boolean checkIsDataAvailableInTransaction();
-    Student searchStudentById(String id);
-    List<Student> deleteStudentById(String id);
-    Student updateStudentById(String id);
+    Boolean checkIsDataAvailableInTransaction(String fileToCheck);
+    List<Student> searchStudentById(String id);
+    Student deleteStudentById(String id);
+    Boolean checkIsStudentExistedById(String id);
+    Student updateStudentById(String id, Student student);
 }

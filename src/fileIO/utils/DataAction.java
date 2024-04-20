@@ -9,43 +9,35 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class DataAction {
-    private final static String fileName = "transaction/transaction.dat";
+    private final static String fileName = "transaction/transaction-addNew.dat";
     public static Integer numberOfDataHasBeenStoredInTransactionFile;
-    public static void addDataToTransaction(List<Student> students){
+    public static void addDataToTransaction(List<Student> students, String transactionFileName){
         try(ObjectOutputStream objectOutputStream
                     = new ObjectOutputStream(
                 new BufferedOutputStream(
-                        new FileOutputStream(fileName)
+                        new FileOutputStream(STR."transaction/\{transactionFileName}")
                 )
         )
         ){
-                    long startedTime = System.currentTimeMillis();
-//                    students.addAll(data);
                     objectOutputStream.writeObject(students);
-                    long endedTime = System.currentTimeMillis();
-//                    if(!Objects.equals(students, new ArrayList<>())){
-//                        System.out.println(STR."[+] Spent time for writing data: \{(double)(endedTime - startedTime) / 1000} s".toUpperCase(Locale.ROOT));
-//                        System.out.println(STR."[+] Wrote data \{students.size()} record successfully.".toUpperCase(Locale.ROOT));
-//                    }
         }catch (IOException problem){
             System.out.println(STR."[!] Problem during writing hero to a file: \{problem.getMessage()}");
-//            System.out.println(problem.getMessage());
         }
     }
-    public static List<Student> readFromTransaction(){
+    public static List<Student> readFromTransaction(String fileNameToReadData){
         try(ObjectInputStream objectInputStream
                     = new ObjectInputStream(
                 new BufferedInputStream(
-                        new FileInputStream(fileName)
+                        new FileInputStream(STR."transaction/\{fileNameToReadData}")
                 )
         )){
             @SuppressWarnings("unchecked")
             List<Student> newStudents = (List<Student>) objectInputStream.readObject();
-            if(Objects.equals(newStudents, new ArrayList<>())){
+            if(Objects.equals(newStudents, null)){
                 return null;
             }else {
 //                long endedTime = System.currentTimeMillis();
-                numberOfDataHasBeenStoredInTransactionFile = newStudents.size();
+                numberOfDataHasBeenStoredInTransactionFile = newStudents==null ? 1:newStudents.size();
                 return newStudents;
             }
 //            // data table

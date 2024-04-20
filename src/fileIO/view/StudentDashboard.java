@@ -3,31 +3,86 @@ package fileIO.view;
 import fileIO.controller.StudentController;
 
 import fileIO.model.Student;
+import fileIO.model.service.StudentServiceImp;
 import fileIO.utils.DataAction;
+import fileIO.utils.SoundUtils;
 import fileIO.utils.StudentDataTable;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
 
 public class StudentDashboard {
     private final static StudentController studentController = new StudentController();
-    private static Student insertNewStudentsInfo(){
-        System.out.println("> Insert student's info".toUpperCase(Locale.ROOT));
-        System.out.print("[+] Insert student's name: ");
-        String name = new Scanner(System.in).nextLine();
-//
-        System.out.println("[+] Student date of birth ".toUpperCase(Locale.ROOT));
+    private static String insertStudentDateOfBirth(){
         System.out.print("> Year (number): ");
         int year = new Scanner(System.in).nextInt();
         System.out.print("> Month (number): ");
         int month  =new Scanner(System.in).nextInt();
         System.out.print("> Day (number): ");
         int day = new Scanner(System.in).nextInt();
+        return LocalDate.of(year,month,day).toString();
+    }
+    private static Student viewForUpdateStudentInfo(Student student){
+//
+        String data;
+//
+        System.out.println("=".repeat(60));
+        System.out.println("[+] Update Student's Information: ".toUpperCase(Locale.ROOT));
+        System.out.println("1. Update student's Name");
+        System.out.println("2. Update student's Date of birth");
+        System.out.println("3. Update student's Class");
+        System.out.println("4. Update student's Subject");
+        System.out.println(".".repeat(20));
+        System.out.print("> Insert option: ");
+        String opt = new Scanner(System.in).next();
+        switch (Integer.parseInt(opt)){
+            case 1->{
+                System.out.print("[+] Insert NEw student's name: ");
+                data = new Scanner(System.in).nextLine();
+                student.setStudentName(data);
+            }
+            case 2->{
+                System.out.println("[+] Insert NEw student's date of birth: ");
+                student.setStudentDateOfBirth(insertStudentDateOfBirth());
+            }
+            case 3->{
+                System.out.println("[!] You can insert multi classes by splitting [,] symbol (c1,c2).".toUpperCase(Locale.ROOT));
+                System.out.print("[+] Insert NEw student's class: ");
+                String classStudied = new Scanner(System.in).nextLine();
+                String [] classes = classStudied.split(",");
+                for(int i=0;i<classes.length;i++){
+                    classes[i] = classes[i].trim();
+                }
+                student.setStudentClasses(classes);
+            }
+            case 4->{
+                System.out.println("[!] You can insert multi subjects by splitting [,] symbol (s1,s2).".toUpperCase(Locale.ROOT));
+                System.out.print("[+] Insert NEw student's Subject studied: ");
+                String studentSubject = new Scanner(System.in).nextLine();
+                // remove space from insert for any subject
+                String[] subjects = studentSubject.split(",");
+                for(int i=0;i<subjects.length;i++){
+                    subjects[i] = subjects[i].trim();
+                }
+                student.setStudentSubjects(subjects);
+            }
+            default -> System.out.println("[!] Invalid Option. :(");
+        }
+        return student;
+    }
+    private static Student insertNewStudentsInfo(){
+        System.out.println("> Insert student's info".toUpperCase(Locale.ROOT));
+        System.out.print("[+] Insert student's name: ");
+        String name = new Scanner(System.in).nextLine();
+//
+        System.out.println("[+] Student date of birth ".toUpperCase(Locale.ROOT));
+        String dateOfBirth = insertStudentDateOfBirth();
 //
         System.out.println("[!] You can insert multi classes by splitting [,] symbol (c1,c2).".toUpperCase(Locale.ROOT));
         System.out.print("[+] Student's class: ");
         String studentClass = new Scanner(System.in).nextLine();
-        String[] classes  =studentClass.split(",");
+        String[] classes  = studentClass.split(",");
 //
         for(int i=0;i<classes.length;i++){
             classes[i] = classes[i].trim();
@@ -40,7 +95,7 @@ public class StudentDashboard {
         for(int i=0;i<subjects.length;i++){
             subjects[i] = subjects[i].trim();
         }
-        return new Student(STR."\{new Random().nextInt(10000)}CSTAD",name, LocalDate.of(year,month,day).toString(),classes,subjects);
+        return new Student(STR."\{new Random().nextInt(10000)}CSTAD",name, dateOfBirth,classes,subjects);
     }
     private static void options(){
         System.out.println("=".repeat(100));
@@ -51,8 +106,9 @@ public class StudentDashboard {
         System.out.print("5. Update students' Info by ID\t".toUpperCase(Locale.ROOT));
         System.out.print("6. Delete student's data by ID.\n".toUpperCase(Locale.ROOT));
         System.out.print("\t\t7. Generate Data to File\t".toUpperCase(Locale.ROOT));
-        System.out.print("8. Restore Data\t\t\t\t\t".toUpperCase(Locale.ROOT));
-        System.out.print("9. Delete/Clear all data.\n".toUpperCase(Locale.ROOT));
+        System.out.print("8. Back Up Data\t\t\t\t\t".toUpperCase(Locale.ROOT));
+        System.out.print("9. Restore Data\n".toUpperCase(Locale.ROOT));
+        System.out.print("\t\t10. Delete/Clear all data from Data STORE".toUpperCase(Locale.CANADA));
         System.out.print("\t\t0, 99. Exit");
         System.out.println();
         System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tCopyright-CSTAD-2024");
@@ -61,11 +117,14 @@ public class StudentDashboard {
     private static void checkInTransaction(){
         if(studentController.checkDataIsAvailableInTransaction()){
             System.out.print(STR."> Commit your \{DataAction.numberOfDataHasBeenStoredInTransactionFile} data record before hand [Y/N]: ");
+            SoundUtils.alertSound();
             String opt = new Scanner(System.in).nextLine();
             if(opt.equalsIgnoreCase("Y")){
                 studentController.commitDataFromTransaction();
             }
-            DataAction.addDataToTransaction(new ArrayList<>());
+            DataAction.addDataToTransaction(null,"transaction-addNew.dat");
+            DataAction.addDataToTransaction(null,"transaction-update.dat");
+            DataAction.addDataToTransaction(null,"transaction-delete.dat");
         }
     }
     public static void view(){
@@ -86,7 +145,6 @@ public class StudentDashboard {
                     studentController.addNewStudent((insertNewStudentsInfo()));
                 }
                 case 2->{
-                    System.out.println("[*] Students' Data".toUpperCase(Locale.ROOT));
                     StudentDataTable.dataTable(studentController.listAllStudents());
                 }
                 case 3->{
@@ -97,8 +155,7 @@ public class StudentDashboard {
                     System.out.print("> Insert student's ID: ");
                     String id = new Scanner(System.in).nextLine();
                     try{
-                        System.out.println("[*] Student's Info.".toUpperCase(Locale.ROOT));
-                        StudentDataTable.dataTable(new ArrayList<>(
+                        StudentDataTable.tableFromSearchedResult(new ArrayList<>(
                                 List.of(studentController.searchStudentById(id.trim()))
                         ));
                     }catch (NoSuchElementException exception){
@@ -111,9 +168,18 @@ public class StudentDashboard {
                     String id = new Scanner(System.in).nextLine();
                     try{
                         System.out.println("[*] Student's Info.".toUpperCase(Locale.ROOT));
-                        StudentDataTable.dataTable(new ArrayList<>(
-                                List.of(studentController.updateStudentById(id.trim()))
-                        ));
+                        Student student  = studentController.searchStudentById(id.trim());
+                        if(student!=null){
+                            StudentDataTable.tableFromSearchedResult(new ArrayList<>(
+                                    List.of(studentController.searchStudentById(id.trim())
+                                    )));
+                            StudentDataTable.tableFromSearchedResult(new ArrayList<>(
+                                    List.of(studentController.updateStudentById(id.trim(),viewForUpdateStudentInfo(student)))
+                            ));
+                        }
+                        System.out.print("[+] Updated successfully, press to continue...".toUpperCase(Locale.ROOT));
+                        SoundUtils.alertSound();
+                        new Scanner(System.in).nextLine();
                     }catch (NoSuchElementException exception){
                         StudentDataTable.dataTable(new ArrayList<>(),STR." No such a student you found with ID \"\{id}\"".toUpperCase(Locale.CANADA));
                     }
@@ -123,9 +189,12 @@ public class StudentDashboard {
                     System.out.print("> Insert student's ID: ");
                     String id = new Scanner(System.in).nextLine();
                     try{
-                        System.out.println("[*] Student Info you have deleted.".toUpperCase(Locale.ROOT));
-                        StudentDataTable.dataTable(studentController.deleteStudentById((id.trim())));
+                        StudentDataTable.tableFromSearchedResult(new ArrayList<>(
+                                List.of(studentController.searchStudentById(id.trim()))
+                        ));
+                        studentController.deleteStudentById(id.trim());
                     }catch (NoSuchElementException exception){
+                        SoundUtils.windowsRingSound();
                         StudentDataTable.dataTable(new ArrayList<>(), STR." No such a student you found with ID \"\{id}\"".toUpperCase(Locale.CANADA));
                     }
                 }
@@ -135,10 +204,12 @@ public class StudentDashboard {
                 case 8->{
 
                 }
-                case 9->{
+                case 10->{
+                    SoundUtils.alertSound();
                     studentController.destroyData();
                 }
                 default -> {
+                    SoundUtils.windowsRingSound();
                     System.out.println("[!] No Option :(.".toUpperCase(Locale.ROOT));
                 }
             }
