@@ -5,6 +5,7 @@ import fileIO.model.service.StudentService;
 import fileIO.model.service.StudentServiceImp;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -48,5 +49,12 @@ public class StudentController {
     }
     public Student updateStudentById(String id, Student student){
         return service.updateStudentById(id, student);
+    }
+//
+    public void backUp(String fileName){
+        service.backUpData(fileName);
+    }
+    public Map<Integer, String> restoreFile(){
+        return service.restoreData();
     }
 }

@@ -4,6 +4,8 @@ import fileIO.utils.DataAction;
 import fileIO.utils.SoundUtils;
 
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -238,5 +240,24 @@ public class StudentServiceImp implements StudentService{
         }else {
             throw new NoSuchElementException();
         }
+    }
+
+    @Override
+    public void backUpData(String fileName) {
+        DataAction.backUp(readObjectFromFile(),fileName);
+    }
+
+    @Override
+    public Map<Integer, String> restoreData() {
+        Path path = Paths.get("backUp");
+        File [] files = path.toFile().listFiles();
+        Map<Integer, String> fileMap  = new HashMap<>();
+        int no = 1;
+        assert files != null;
+        for(File file: files){
+            fileMap.put(no,file.getName());
+            no++;
+        }
+        return fileMap;
     }
 }

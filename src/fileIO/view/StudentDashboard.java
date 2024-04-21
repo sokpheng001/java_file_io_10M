@@ -7,6 +7,8 @@ import fileIO.model.Student;
 import fileIO.utils.DataAction;
 import fileIO.utils.SoundUtils;
 import fileIO.utils.StudentDataTable;
+
+import javax.xml.transform.sax.SAXSource;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -241,7 +243,22 @@ public class StudentDashboard {
                 }
                 case 7-> studentController.generateObjects();
                 case 8->{
-
+                    System.out.println("[+] BackUp date process".toUpperCase(Locale.ROOT));
+                    System.out.println("......");
+                    System.out.print("[+] Insert file backup name: ");
+                    SoundUtils.alertSound();
+                    String fileName = new Scanner(System.in).nextLine();
+                    studentController.backUp(fileName);
+                }
+                case 9->{
+                    if(!studentController.restoreFile().isEmpty()){
+                        System.out.println("[+] List of Restoring File".toUpperCase(Locale.ROOT));
+                        System.out.println("........");
+                        System.out.println(                        studentController.restoreFile().get(2));
+                    }else {
+                        System.out.println(">> No restoring file ".toUpperCase(Locale.ROOT));
+                        SoundUtils.windowsRingSound();
+                    }
                 }
                 case 10->{
                     SoundUtils.alertSound();

@@ -1,12 +1,13 @@
 package fileIO.utils;
 
 import fileIO.model.Student;
+import fileIO.model.service.StudentServiceImp;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class DataAction {
     private final static String fileName = "transaction/transaction-addNew.dat";
@@ -37,7 +38,7 @@ public class DataAction {
                 return null;
             }else {
 //                long endedTime = System.currentTimeMillis();
-                numberOfDataHasBeenStoredInTransactionFile = newStudents==null ? 1:newStudents.size();
+                numberOfDataHasBeenStoredInTransactionFile = newStudents==null ? 1: newStudents.size();
                 return newStudents;
             }
 //            // data table
@@ -49,5 +50,18 @@ public class DataAction {
             }
         }
         return null;
+    }
+    public static void backUp(List<Student> studentList,String fileName){
+        try(ObjectOutputStream objectOutputStream
+                    = new ObjectOutputStream(
+                new BufferedOutputStream(
+                        new FileOutputStream(STR."backUp/\{STR."backup-\{new Random().nextInt(99999999)}-\{LocalDate.now()}-\{fileName}"}.dat")
+                )
+        )
+        ){
+            objectOutputStream.writeObject(studentList);
+        }catch (IOException problem){
+            System.out.println(STR."[!] Problem during backing up file: \{problem.getMessage()}");
+        }
     }
 }
