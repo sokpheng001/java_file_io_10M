@@ -64,7 +64,7 @@ public class StudentServiceImp implements StudentService{
             List<Student> newStudents = (List<Student>) objectInputStream.readObject();
             long endedTime = System.currentTimeMillis();
             System.out.println(STR."[*] Spent time for reading data: \{(double)(endedTime - startedTime) / 1000}s".toUpperCase(Locale.ROOT));
-            System.out.println(STR."[*] Number of record: \{newStudents.size()}".toUpperCase(Locale.ROOT));// data table
+            System.out.println(STR."[*] Number of record in data source file: \{newStudents.size()}".toUpperCase(Locale.ROOT));// data table
             return newStudents;
         }catch (IOException | ClassNotFoundException exception){
             if(exception.getMessage()==null){
