@@ -151,14 +151,24 @@ public class StudentServiceImp implements StudentService{
     @Override
     public void commitFromTransaction() {
         String [] fileToRead = {"transaction-addNew.dat","transaction-update.dat","transaction-delete.dat"};
-        List<Student> store = new ArrayList<>();
         for(String fileName: fileToRead ){
-            if(checkIsDataAvailableInTransaction(fileName)){
-                students.clear();
-                for(Student student: Objects.requireNonNull(DataAction.readFromTransaction(fileName))){
-                    if(!students.contains(student)){
-                        students.add(student);
-                        Collections.reverse(students);
+            if(!fileName.equalsIgnoreCase(fileToRead[0])){
+                if(checkIsDataAvailableInTransaction(fileName)){
+                    students.clear();
+                    for(Student student: Objects.requireNonNull(DataAction.readFromTransaction(fileName))){
+                        if(!students.contains(student)){
+                            students.add(student);
+                            Collections.reverse(students);
+                        }
+                    }
+                }
+            }else {
+                if(checkIsDataAvailableInTransaction(fileName)){
+                    for(Student student: Objects.requireNonNull(DataAction.readFromTransaction(fileName))){
+                        if(!students.contains(student)){
+                            students.add(student);
+                            Collections.reverse(students);
+                        }
                     }
                 }
             }

@@ -143,19 +143,49 @@ public class StudentDashboard {
                 case 1-> studentController.addNewStudent((insertNewStudentsInfo()));
                 case 2->{
                     List<Student> studentList = studentController.listAllStudents();
-                    StudentDataTable.studentDataTable(studentList,3);
+                    StudentDataTable.studentDataTable(studentList,4,0,1);
                     try{
-                        do {
-                            System.out.print("[+] Insert to Navigate: ");
-                            String op = new Scanner(System.in).nextLine();
-                            if(op.isEmpty()){
-                                break;
+                        int start = 0;
+                        if(!studentList.isEmpty()){
+                            int page=1;
+                            int numberOfRecordForEachPage = 4;
+//
+                            if(studentList.size()<=numberOfRecordForEachPage){
+                                System.out.println("[!] LAST PAGE <<");
                             }
-                            StudentDataTable.studentDataTable(studentList, Integer.parseInt(op));
-
-
-                        } while (!opt.isEmpty());
-                    }catch (OutOfMemoryError outOfMemoryError){
+//
+                            while (true) {
+                                System.out.print("[+] Insert to Navigate [p/N]: ");
+                                String op = new Scanner(System.in).nextLine();
+                                if(op.equalsIgnoreCase("b") || op.equalsIgnoreCase("back")){
+                                    break;
+                                }else if(op.isEmpty()){
+                                    SoundUtils.windowsRingSound();
+                                    continue;
+                                }
+                                if(op.equalsIgnoreCase("n") || op.equalsIgnoreCase("next")){
+                                    start+=4;
+                                    if(start+numberOfRecordForEachPage>studentList.size()){
+                                        start-=4;
+                                        System.out.println("[!] LAST PAGE <<");
+                                        SoundUtils.windowsRingSound();
+                                    }else if(start>=studentList.size()){
+                                        start = studentList.size()-1;
+                                    }
+                                    StudentDataTable.studentDataTable(studentList,numberOfRecordForEachPage, start,page);
+                                    page++;
+                                }else if ((op.equalsIgnoreCase("p")) || op.equalsIgnoreCase("previous") ){
+                                    if(start!=0){
+                                        start-=4;
+                                    }
+                                    if(page>1){
+                                        page--;
+                                    }
+                                    StudentDataTable.studentDataTable(studentList,numberOfRecordForEachPage, start,page);
+                                }
+                            }
+                        }
+                    }catch (VirtualMachineError | Exception problem){
                         SoundUtils.windowsRingSound();
                         System.out.println("[!] Problem during listing data.".toUpperCase(Locale.ROOT));
                     }
@@ -170,7 +200,7 @@ public class StudentDashboard {
                                 List.of(studentController.searchStudentById(id.trim()))
                         ));
                     }catch (NoSuchElementException exception){
-                        StudentDataTable.studentDataTable(new ArrayList<>(),null,STR." No such a student you found with ID \"\{id}\"".toUpperCase(Locale.CANADA));
+                        StudentDataTable.studentDataTable(new ArrayList<>(),null,0,1,STR." No such a student you found with ID \"\{id}\"".toUpperCase(Locale.CANADA));
                     }
                 }
                 case 5->{
@@ -192,7 +222,7 @@ public class StudentDashboard {
                         SoundUtils.alertSound();
                         new Scanner(System.in).nextLine();
                     }catch (NoSuchElementException exception){
-                        StudentDataTable.studentDataTable(new ArrayList<>(),null,STR." No such a student you found with ID \"\{id}\"".toUpperCase(Locale.CANADA));
+                        StudentDataTable.studentDataTable(new ArrayList<>(),null,1,0,STR." No such a student you found with ID \"\{id}\"".toUpperCase(Locale.CANADA));
                     }
                 }
                 case 6->{
@@ -206,7 +236,7 @@ public class StudentDashboard {
                         studentController.deleteStudentById(id.trim());
                     }catch (NoSuchElementException exception){
                         SoundUtils.windowsRingSound();
-                        StudentDataTable.studentDataTable(new ArrayList<>(),null ,STR." No such a student you found with ID \"\{id}\"".toUpperCase(Locale.CANADA));
+                        StudentDataTable.studentDataTable(new ArrayList<>(),null,1,0 ,STR." No such a student you found with ID \"\{id}\"".toUpperCase(Locale.CANADA));
                     }
                 }
                 case 7-> studentController.generateObjects();

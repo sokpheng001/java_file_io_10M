@@ -9,12 +9,13 @@ import org.nocrala.tools.texttablefmt.Table;
 import java.util.*;
 
 public class StudentDataTable {
-    public static void studentDataTable(List<Student> anyObjectList, Integer actualRecordNumberInOnce ,String...message){
-        if(actualRecordNumberInOnce==null || actualRecordNumberInOnce==0|| actualRecordNumberInOnce<0 || actualRecordNumberInOnce>anyObjectList.size() ){
-            actualRecordNumberInOnce = 3;
+    public static void studentDataTable(List<Student> studentList
+, Integer actualRecordNumberInOnce, int navigateStart ,int pageNumber,String...message){
+        if(actualRecordNumberInOnce==null || actualRecordNumberInOnce==0|| actualRecordNumberInOnce<0 || actualRecordNumberInOnce>studentList.size() ){
+            actualRecordNumberInOnce = Math.min(studentList.size(), 3);
         }
 //        System.out.println(".".repeat(40));
-        if(anyObjectList.equals(new ArrayList<Student>())){
+        if(studentList.equals(new ArrayList<Student>())){
             if(message.length==0){
                 System.out.println("[!] \t\t\t\t\t\t\t\t\t\t> No Data <".toUpperCase(Locale.ROOT));
                 SoundUtils.windowsRingSound();
@@ -36,30 +37,48 @@ public class StudentDataTable {
             }
 //        data
             int i=0;
-            for(Student hero: anyObjectList){
-                table.addCell(hero.getId(),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
-                table.addCell(hero.getStudentName(),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
-                table.addCell(hero.getStudentDateOfBirth(),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
-                table.addCell(Arrays.toString(hero.getStudentClasses()),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
-                table.addCell(Arrays.toString(hero.getStudentSubjects()),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
-                if(anyObjectList.size()>actualRecordNumberInOnce){
+            if(navigateStart>=studentList.size()){
+                navigateStart = studentList.size()-4;
+            }
+//            if(navigateStart+actualRecordNumberInOnce>studentList.size()){
+//                navigateStart = actualRecordNumberInOnce;
+//            }
+            for(int n=navigateStart;n<studentList.size();n++){
+                table.addCell(studentList.get(n).getId(),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
+                table.addCell(studentList.get(n).getStudentName(),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
+                table.addCell(studentList.get(n).getStudentDateOfBirth(),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
+                table.addCell(Arrays.toString(studentList.get(n).getStudentClasses()),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
+                table.addCell(Arrays.toString(studentList.get(n).getStudentSubjects()),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
+                if(studentList.size()>actualRecordNumberInOnce){
                     i++;
                     if(i==actualRecordNumberInOnce){
                         break;
                     }
                 }
             }
+//            for(Student hero: studentList){
+//                table.addCell(hero.getId(),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
+//                table.addCell(hero.getStudentName(),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
+//                table.addCell(hero.getStudentDateOfBirth(),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
+//                table.addCell(Arrays.toString(hero.getStudentClasses()),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
+//                table.addCell(Arrays.toString(hero.getStudentSubjects()),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
+//                if(studentList.size()>actualRecordNumberInOnce){
+//                    i++;
+//                    if(i==actualRecordNumberInOnce){
+//                        break;
+//                    }
+//                }
+//            }
             System.out.println(table.render());
 //            pagination
-            int page = anyObjectList.size()/actualRecordNumberInOnce;
             System.out.println("-".repeat(146));
-            System.out.print(STR."+ Number of page: \{(page)==0? 1:page } \t\t+ Actual record: \{actualRecordNumberInOnce}\t\t+ All Record: \{anyObjectList.size()}\t\t\t\t\t\t-> Previous (P/p) \t\t Next (n/N) <-\n");
+            System.out.print(STR."[*] Page Number: \{pageNumber}\t [*] Actual record: \{actualRecordNumberInOnce}\t[*] All Record: \{studentList.size()}\t\t\t\t\t\t\t\t\t\t [+] Previous (P/p) - [+] Next (n/N) - [+] Back (B/b)\n");
             System.out.println("-".repeat(80));
         }
     }
-    public static void tableFromSearchedResult(List<Student> anyObjectList, String...message){
+    public static void tableFromSearchedResult(List<Student> studentList, String...message){
         System.out.println(".".repeat(40));
-        if(anyObjectList.equals(new ArrayList<Student>())){
+        if(studentList.equals(new ArrayList<Student>())){
             if(message.length==0){
                 System.out.println("[!] \t\t\t\t\t\t\t\t\t\t> No Data <".toUpperCase(Locale.ROOT));
                 SoundUtils.windowsRingSound();
@@ -77,18 +96,18 @@ public class StudentDataTable {
                 table.setColumnWidth(i, 30, 50);
             }
 //        data
-            for (Student hero : anyObjectList) {
+            for (Student student : studentList) {
                 table.addCell("ID", new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
-                table.addCell(hero.getId(), new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
+                table.addCell(student.getId(), new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
                 table.addCell("NAME", new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
-                table.addCell(hero.getStudentName(), new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
+                table.addCell(student.getStudentName(), new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
 //
                 table.addCell("BIRTH", new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
-                table.addCell(hero.getStudentDateOfBirth(), new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
+                table.addCell(student.getStudentDateOfBirth(), new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
                 table.addCell("CLASS", new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
-                table.addCell(Arrays.toString(hero.getStudentClasses()), new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
+                table.addCell(Arrays.toString(student.getStudentClasses()), new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
                 table.addCell("SUBJECT", new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
-                table.addCell(Arrays.toString(hero.getStudentSubjects()), new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
+                table.addCell(Arrays.toString(student.getStudentSubjects()), new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
             }
             System.out.println(table.render());
         }
