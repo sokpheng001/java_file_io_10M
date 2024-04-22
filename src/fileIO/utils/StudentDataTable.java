@@ -16,12 +16,15 @@ public class StudentDataTable {
         }
 //        System.out.println(".".repeat(40));
         if(studentList.equals(new ArrayList<Student>())){
+            System.out.println(".".repeat(60));
             if(message.length==0){
                 System.out.println("[!] \t\t\t\t\t\t\t\t\t\t> No Data <".toUpperCase(Locale.ROOT));
-                SoundUtils.windowsRingSound();
             }else {
-                System.out.println(STR."[!]\{message[0]}".toUpperCase(Locale.CANADA));
+                System.out.println(STR."[!] \{message[0]}".toUpperCase(Locale.CANADA));
             }
+            System.out.println(".".repeat(60));
+            SoundUtils.windowsRingSound();
+
         }else {
             System.out.println("[*] Students' Data".toUpperCase(Locale.ROOT));
 //

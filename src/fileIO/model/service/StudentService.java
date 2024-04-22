@@ -14,6 +14,7 @@ public interface StudentService {
     void destroyData();
     Boolean checkIsDataAvailableInTransaction(String fileToCheck);
     List<Student> searchStudentById(String id);
+    List<Student> searchStudentByName(String name);
     Student deleteStudentById(String id);
     Boolean checkIsStudentExistedById(String id);
     Student updateStudentById(String id, Student student);

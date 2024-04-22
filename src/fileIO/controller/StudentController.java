@@ -44,6 +44,9 @@ public class StudentController {
     public Student searchStudentById(String id) throws NoSuchElementException {
         return service.searchStudentById(id).getFirst();
     }
+    public List<Student> searchStudentByName(String name){
+        return service.searchStudentByName(name);
+    }
     public Student deleteStudentById(String id){
         return service.deleteStudentById(id);
     }

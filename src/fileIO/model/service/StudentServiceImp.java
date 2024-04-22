@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class StudentServiceImp implements StudentService{
     private List<Student> students = readObjectFromFile();
@@ -199,6 +200,14 @@ public class StudentServiceImp implements StudentService{
             System.out.println(STR."[!] Problem: \{exception.getMessage()}");
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public List<Student> searchStudentByName(String name) {
+        return students.stream()
+                .filter(e->e.getStudentName().toLowerCase().contains(name.toLowerCase())
+                        || e.getStudentName().toLowerCase().equalsIgnoreCase(name))
+                .collect(Collectors.toList());
     }
 
     @Override
