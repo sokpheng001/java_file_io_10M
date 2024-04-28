@@ -110,18 +110,25 @@ public class StudentDashboard {
         System.out.print("\t\t1. Add new student\t\t\t".toUpperCase(Locale.ROOT));
         System.out.print("2. List all students\t\t\t".toUpperCase(Locale.ROOT));
         System.out.print("3. Commit data to file\n".toUpperCase(Locale.ROOT));
-        System.out.print("\t\t4. Search Student\t\t\t".toUpperCase(Locale.ROOT));
+        System.out.print("\t\t4. Search for Student\t\t".toUpperCase(Locale.ROOT));
         System.out.print("5. Update students' Info by ID\t".toUpperCase(Locale.ROOT));
         System.out.print("6. Delete student's data by ID.\n".toUpperCase(Locale.ROOT));
         System.out.print("\t\t7. Generate Data to File\t".toUpperCase(Locale.ROOT));
-        System.out.print("8. Back Up Data\t\t\t\t\t".toUpperCase(Locale.ROOT));
-        System.out.print("9. Restore Data\n".toUpperCase(Locale.ROOT));
-        System.out.print("\t\t10. Delete/Clear all data from Data STORE".toUpperCase(Locale.CANADA));
+//        System.out.print("8. Back Up Data\t\t\t\t\t".toUpperCase(Locale.ROOT));
+//        System.out.print("9. Restore Data\n".toUpperCase(Locale.ROOT));
+        System.out.print("8. Delete/Clear all data from Data STORE\n".toUpperCase(Locale.CANADA));
         System.out.print("\t\t0, 99. Exit");
         System.out.println();
         System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tCopyright-CSTAD-2024");
         System.out.println("=".repeat(100));
     }
+//    clear data from file
+    private static void clearDataFromFile(){
+        DataAction.addDataToTransaction(null,"transaction-addNew.dat");
+        DataAction.addDataToTransaction(null,"transaction-update.dat");
+        DataAction.addDataToTransaction(null,"transaction-delete.dat");
+    }
+//
     private static void checkInTransaction(){
         if(studentController.checkDataIsAvailableInTransaction()){
             boolean isCommitted = true;
@@ -132,11 +139,10 @@ public class StudentDashboard {
                 if(opt.equalsIgnoreCase("Y")){
                     studentController.commitDataFromTransaction();
                     isCommitted = false;
-                    DataAction.addDataToTransaction(null,"transaction-addNew.dat");
-                    DataAction.addDataToTransaction(null,"transaction-update.dat");
-                    DataAction.addDataToTransaction(null,"transaction-delete.dat");
+                    clearDataFromFile();
                 }else if(opt.equalsIgnoreCase("n")){
                     isCommitted = false;
+                    clearDataFromFile();
                 }else {
                     SoundUtils.windowsRingSound();
                 }
@@ -145,17 +151,15 @@ public class StudentDashboard {
     }
 //    pagination
     private static void pagination(List<Student> studentList){
+        int numberOfRecordForEachPage = 4;
+        if(studentList.size()<=numberOfRecordForEachPage){
+            System.out.println("[!] LAST PAGE <<");
+        }
         StudentDataTable.studentDataTable(studentList,4,0,1, "No such a student found");
         try{
             int start = 0;
             if(!studentList.isEmpty()){
-                int page=1;
-                int numberOfRecordForEachPage = 4;
-//
-                if(studentList.size()<=numberOfRecordForEachPage){
-                    System.out.println("[!] LAST PAGE <<");
-                }
-//
+                int page=1; // page number
                 while (true) {
                     System.out.print("[+] Insert to Navigate [p/N]: ");
                     String op = new Scanner(System.in).nextLine();
@@ -170,11 +174,14 @@ public class StudentDashboard {
                     }
                     if(op.equalsIgnoreCase("n") || op.equalsIgnoreCase("next")){
                         start+=4;
-                        if(start+numberOfRecordForEachPage>studentList.size()){
+                        if(start<studentList.size()){
+                            start = start;
+                        }
+                        else if(start+numberOfRecordForEachPage>studentList.size()){
                             start-=4;
                             System.out.println("[!] LAST PAGE <<");
                             SoundUtils.windowsRingSound();
-                        }else if(start>=studentList.size()){
+                        }else {
                             start = studentList.size()-1;
                         }
                         StudentDataTable.studentDataTable(studentList,numberOfRecordForEachPage, start,page, "No such a student found");
@@ -215,7 +222,11 @@ public class StudentDashboard {
                     List<Student> studentList = studentController.listAllStudents();
                     pagination(studentList);
                 }
-                case "3"-> studentController.commitData();
+                case "3"-> {
+                    studentController.commitDataFromTransaction();
+                    clearDataFromFile();
+                    SoundUtils.alertSound();
+                }
                 case "4"->{
                     boolean isFour = true;
                     while (isFour){
@@ -299,25 +310,25 @@ public class StudentDashboard {
                     }
                 }
                 case "7"-> studentController.generateObjects();
+//                case "8"->{
+//                    System.out.println("[+] BackUp date process".toUpperCase(Locale.ROOT));
+//                    System.out.println("......");
+//                    System.out.print("[+] Insert file backup name: ");
+//                    SoundUtils.alertSound();
+//                    String fileName = new Scanner(System.in).nextLine();
+//                    studentController.backUp(fileName);
+//                }
+//                case "9"->{
+//                    if(!studentController.restoreFile().isEmpty()){
+//                        System.out.println("[+] List of Restoring File".toUpperCase(Locale.ROOT));
+//                        System.out.println("........");
+//                        System.out.println(                        studentController.restoreFile().get(2));
+//                    }else {
+//                        System.out.println(">> No restoring file ".toUpperCase(Locale.ROOT));
+//                        SoundUtils.windowsRingSound();
+//                    }
+//                }
                 case "8"->{
-                    System.out.println("[+] BackUp date process".toUpperCase(Locale.ROOT));
-                    System.out.println("......");
-                    System.out.print("[+] Insert file backup name: ");
-                    SoundUtils.alertSound();
-                    String fileName = new Scanner(System.in).nextLine();
-                    studentController.backUp(fileName);
-                }
-                case "9"->{
-                    if(!studentController.restoreFile().isEmpty()){
-                        System.out.println("[+] List of Restoring File".toUpperCase(Locale.ROOT));
-                        System.out.println("........");
-                        System.out.println(                        studentController.restoreFile().get(2));
-                    }else {
-                        System.out.println(">> No restoring file ".toUpperCase(Locale.ROOT));
-                        SoundUtils.windowsRingSound();
-                    }
-                }
-                case "10"->{
                     SoundUtils.alertSound();
                     studentController.destroyData();
                 }
