@@ -255,6 +255,9 @@ public class StudentDashboard {
                                     StudentDataTable.tableFromSearchedResult(new ArrayList<>(
                                             List.of(studentController.searchStudentById(id.trim()))
                                     ));
+                                    SoundUtils.alertSound();
+                                    System.out.print(">>> Press Enter to continue...".toLowerCase(Locale.ROOT));
+                                    new Scanner(System.in).nextLine();
                                 }catch (NoSuchElementException exception){
                                     StudentDataTable.studentDataTable(new ArrayList<>(),null,0,1, "No such a student found".toUpperCase(Locale.CANADA));
                                     SoundUtils.windowsRingSound();

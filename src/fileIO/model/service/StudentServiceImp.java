@@ -154,6 +154,7 @@ public class StudentServiceImp implements StudentService{
     @Override
     public void commitFromTransaction() {
         String [] fileToRead = {"transaction-addNew.dat","transaction-update.dat","transaction-delete.dat"};
+        boolean isDataFileContainData = false;
         for(String fileName: fileToRead ){
             if(!fileName.equalsIgnoreCase(fileToRead[0])){
                 if(checkIsDataAvailableInTransaction(fileName)){
