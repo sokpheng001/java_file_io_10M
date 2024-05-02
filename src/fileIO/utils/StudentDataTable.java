@@ -28,12 +28,13 @@ public class StudentDataTable {
         }else {
             System.out.println("[*] Students' Data".toUpperCase(Locale.ROOT));
 //
-            Table table = new Table(5, BorderStyle.UNICODE_BOX_HEAVY_BORDER, ShownBorders.ALL);
+            Table table = new Table(6, BorderStyle.UNICODE_BOX_HEAVY_BORDER, ShownBorders.ALL);
             table.addCell("ID",new CellStyle(CellStyle.HorizontalAlign.CENTER));
             table.addCell("STUDENT'S NAME",new CellStyle(CellStyle.HorizontalAlign.CENTER));
             table.addCell("STUDENT'S DATE OF BIRTH",new CellStyle(CellStyle.HorizontalAlign.CENTER));
             table.addCell("STUDENT CLASS",new CellStyle(CellStyle.HorizontalAlign.CENTER));
             table.addCell("STUDENTS' SUBJECT",new CellStyle(CellStyle.HorizontalAlign.CENTER));
+            table.addCell("CREATED/ UPDATED AT",new CellStyle(CellStyle.HorizontalAlign.CENTER));
 //
             for(int i=0;i<5;i++){
                 table.setColumnWidth(i,30,50);
@@ -52,6 +53,7 @@ public class StudentDataTable {
                 table.addCell(studentList.get(n).getStudentDateOfBirth(),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
                 table.addCell(Arrays.toString(studentList.get(n).getStudentClasses()),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
                 table.addCell(Arrays.toString(studentList.get(n).getStudentSubjects()),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
+                table.addCell(studentList.get(n).getCreatedAt(),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
                 if(studentList.size()>actualRecordNumberInOnce){
                     i++;
                     if(i==actualRecordNumberInOnce){
@@ -59,19 +61,6 @@ public class StudentDataTable {
                     }
                 }
             }
-//            for(Student hero: studentList){
-//                table.addCell(hero.getId(),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
-//                table.addCell(hero.getStudentName(),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
-//                table.addCell(hero.getStudentDateOfBirth(),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
-//                table.addCell(Arrays.toString(hero.getStudentClasses()),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
-//                table.addCell(Arrays.toString(hero.getStudentSubjects()),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
-//                if(studentList.size()>actualRecordNumberInOnce){
-//                    i++;
-//                    if(i==actualRecordNumberInOnce){
-//                        break;
-//                    }
-//                }
-//            }
             System.out.println(table.render());
 //            pagination
             System.out.println("-".repeat(146));
@@ -111,6 +100,8 @@ public class StudentDataTable {
                 table.addCell(Arrays.toString(student.getStudentClasses()), new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
                 table.addCell("SUBJECT", new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
                 table.addCell(Arrays.toString(student.getStudentSubjects()), new CellStyle(CellStyle.HorizontalAlign.CENTER), 1);
+                table.addCell("CREATED/ UPDATED AT",new CellStyle(CellStyle.HorizontalAlign.CENTER));
+                table.addCell(student.getCreatedAt(),new CellStyle(CellStyle.HorizontalAlign.CENTER),1);
             }
             System.out.println(table.render());
         }

@@ -18,4 +18,5 @@ public class Student implements Serializable {
     private String studentDateOfBirth;
     private String[] studentClasses;
     private String[] studentSubjects;
+    private String createdAt;
 }

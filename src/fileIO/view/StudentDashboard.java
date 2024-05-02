@@ -36,10 +36,11 @@ public class StudentDashboard {
 //
         System.out.println("=".repeat(62));
         System.out.println("[+] Update Student's Information: ".toUpperCase(Locale.ROOT));
-        System.out.println("1. Update Student's Name");
-        System.out.println("2. Update Student's Date of birth");
-        System.out.println("3. Update Student's Class");
-        System.out.println("4. Update Student's Subject");
+        System.out.println("--------------------------------------------");
+        System.out.println("1. Update Student's Name".toUpperCase());
+        System.out.println("2. Update Student's Date of birth".toUpperCase());
+        System.out.println("3. Update Student's Class".toUpperCase());
+        System.out.println("4. Update Student's Subject".toUpperCase());
         System.out.println(".".repeat(20));
         System.out.print("> Insert option: ");
         SoundUtils.alertSound();
@@ -103,7 +104,7 @@ public class StudentDashboard {
         for(int i=0;i<subjects.length;i++){
             subjects[i] = subjects[i].trim();
         }
-        return new Student(STR."\{new Random().nextInt(10000)}CSTAD",name, dateOfBirth,classes,subjects);
+        return new Student(STR."\{new Random().nextInt(10000)}CSTAD",name, dateOfBirth,classes,subjects,LocalDate.now().toString());
     }
     private static void options(){
         System.out.println("=".repeat(100));
@@ -280,7 +281,7 @@ public class StudentDashboard {
                     System.out.print("> Insert student's ID: ");
                     String id = new Scanner(System.in).nextLine();
                     try{
-                        System.out.println("[*] Student's Info.".toUpperCase(Locale.ROOT));
+//                        System.out.println("[*] Student's Info.".toUpperCase(Locale.ROOT));
                         Student student  = studentController.searchStudentById(id.trim());
                         if(student!=null){
                             StudentDataTable.tableFromSearchedResult(new ArrayList<>(

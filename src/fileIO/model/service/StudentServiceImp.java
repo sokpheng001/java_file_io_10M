@@ -105,7 +105,9 @@ public class StudentServiceImp implements StudentService{
                 (STR."\{new Random().nextInt(10000)}CSTAD",
                         "Kim Chansokpheng",
                         LocalDate.of(2004,6,21).toString(),
-                        new String[]{"DevOps, Blockchains"},new String[]{"Cyber security, DevOps, Blockchains"});
+                        new String[]{"DevOps, Blockchains"},
+                        new String[]{"Cyber security, DevOps, Blockchains"},
+                        LocalDate.now().toString());
         for(int i=0;i<number;i++){
             heroes.add(student);
 //                loading animation
@@ -244,6 +246,7 @@ public class StudentServiceImp implements StudentService{
                 e.setStudentDateOfBirth(student.getStudentDateOfBirth());
                 e.setStudentClasses(student.getStudentClasses());
                 e.setStudentSubjects(student.getStudentSubjects());
+                e.setCreatedAt(LocalDate.now().toString());
             });
             DataAction.addDataToTransaction(students, "transaction-update.dat");
             return student;
